@@ -5,6 +5,7 @@ import java.io.*;
 public class OnlineStore {
     static Scanner input = new Scanner(System.in);
     static ArrayList<Product> cart = new ArrayList<>();
+    static ArrayList<Product> products = new ArrayList<>();
 
     public static void main(String[] args) {
         homeScreen();
@@ -17,12 +18,13 @@ public class OnlineStore {
         do {
             System.out.println(
                     """
-                            === ONLINE STORE ===
-                            1. Display Products
-                            2. Display Cart
-                            3. Exit
-                            Choose an option:
-                            """);
+                     === ONLINE STORE ===
+                     1. Display Products
+                     2. Display Cart
+                     3. Exit
+                     Choose an option:
+                     """
+            );
 
             choice = input.nextInt();
 
@@ -33,19 +35,21 @@ public class OnlineStore {
 
                 case 2:
                     displayCart();
+                    break;
 
                 case 3:
                     System.out.println("Goodbye!");
-                    break;
 
                 default:
-                    System.out.println("Invalid choice.");
+                    System.out.println("please choose the above option");
             }
 
         } while (choice != 3);
     }
 
     public static void displayProducts() {
+
+        products.clear();
 
         try {
             Scanner fileScanner = new Scanner(new FileReader("products.csv"));
@@ -61,17 +65,53 @@ public class OnlineStore {
                 String[] productData = line.split("\\|");
 
                 String sku = productData[0];
+                //sku means store keep unit
                 String productName = productData[1];
                 double price = Double.parseDouble(productData[2]);
                 String department = productData[3];
 
-                System.out.printf(
-                        "SKU: %s | Product: %s | Price: $%.2f | Department: %s%n",
-                        sku, productName, price, department
+                Product product = new Product(
+                        sku,
+                        productName,
+                        price,
+                        department
                 );
+
+                products.add(product);
             }
 
             fileScanner.close();
+
+            for (int i = 0; i < products.size(); i++) {
+
+                Product currentProduct = products.get(i);
+
+                System.out.printf(
+                        "%d. SKU: %s | Product: %s | Price: $%.2f | Department: %s%n",
+                        i + 1,
+                        currentProduct.getProductId(),
+                        currentProduct.getProductName(),
+                        currentProduct.getPrice(),
+                        currentProduct.getDepartment()
+                );
+            }
+                System.out.println("\n0. Return to Home Screen");
+                System.out.print("Enter product number to add to cart: ");
+
+                int choice = input.nextInt();
+
+                if (choice > 0 && choice <= products.size()) {
+
+                    Product selectedProduct = products.get(choice - 1);
+
+                    cart.add(selectedProduct);
+
+                    System.out.println(
+                            selectedProduct.getProductName()
+                                    + " added to cart!"
+                    );
+                }
+
 
         } catch (Exception e) {
             System.out.println("Error reading products file.");
