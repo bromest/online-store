@@ -1,7 +1,9 @@
 package com.pluralsight;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.*;
+
 public class OnlineStore {
     static Scanner input = new Scanner(System.in);
     static ArrayList<Product> cart = new ArrayList<>();
